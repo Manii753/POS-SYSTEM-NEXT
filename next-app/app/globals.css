@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+:root {
+  --primary: #4f46e5;
+  --secondary: #f97316;
+  /* other defaults */
+}
+
+.pos-container {
+  background: white;
+  color: #333;
+}
+
+.product-card {
+  background: var(--primary);
+  color: white;
+}
