@@ -175,7 +175,7 @@ const LeftContent = ({ }) => {
                 }
             `}</style>
         </div >
-        <div className="flex-1/4 bg-black/20 pr-4">
+        <div className="flex-1/4 pr-4">
   <div className="h-full flex items-center justify-end p-0 m-0">
     <div className="w-64 space-y-2 text-white text-right">
       <div className="flex justify-between">
