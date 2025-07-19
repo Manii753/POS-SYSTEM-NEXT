@@ -48,7 +48,7 @@ const LeftContent = ({ }) => {
     };
 
     return (
-      <div className="flex flex-col w-[69vw]">
+      <div className="flex flex-col w-[72vw]">
         <div className=" h-[90vh] bg-black/20 rounded-lg shadow-lg overflow-y-scroll custom-scrollbar flex flex-col">
             <table className="w-full">
                 <thead>
