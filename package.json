@@ -1,13 +1,12 @@
 {
   "name": "pos-system-next",
   "version": "1.0.0",
-  "main": "main.js",
+  "main": "main/main.js",
+  "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm:dev:electron\" \"npm:dev:next\"",
-    "dev:electron": "electron .",
-    "dev:next": "cd next-app && next dev",
-    "build:next": "cd next-app && next build && next export",
-    "start": "npm run build:next && electron ."
+    "dev": "concurrently \"npm run dev:next\" \"npm run dev:electron\"",
+    "dev:next": "cd next-app && npm run dev",
+    "dev:electron": "wait-on http://localhost:3000 && electron main/main.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +15,10 @@
   "devDependencies": {
     "concurrently": "^9.2.0",
     "electron": "^37.2.0",
+    "electron-rebuild": "^3.2.9",
     "wait-on": "^8.0.3"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0"
   }
 }

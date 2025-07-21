@@ -1,7 +1,16 @@
+'use client';
+
+
+
 import {BiCross} from 'react-icons'
 import { GiCash } from "react-icons/gi";
 import { FaMoneyBillWave } from "react-icons/fa";
+import { useRouter } from 'next/navigation';
+
+
+
 const RightBar = ({}) => {
+  const router = useRouter();
   return (
     <>
     <div className="w-[28vw] flex flex-col justify-between ">
@@ -74,7 +83,12 @@ const RightBar = ({}) => {
 
             {/* Row 3 */}
             <div className="flex justify-between gap-2 h-16">
-              <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 9</button>
+              <button
+                onClick={() => router.push('/add-product')}
+                className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700"
+              >
+                Add Products
+              </button>
               <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 10</button>
               <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 11</button>
               <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 12</button>
