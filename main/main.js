@@ -1,8 +1,8 @@
-// main/main.js
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { addProduct } from './productService.js'; 
+import { addProduct, getProducts } from './productService.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,24 +18,32 @@ function createWindow() {
     },
   });
 
-  // Load your Next.js app
-  win.loadURL('http://localhost:3000');
+  win.loadURL('http://localhost:3000'); // or your packed HTML in production
 }
 
-// Register IPC handler for adding product
+// ✅ Handle adding product
 ipcMain.handle('add-product', async (event, product) => {
   try {
-    const result = addProduct(product);
-    return result;
+    addProduct(product);
+    return { success: true };
   } catch (err) {
     console.error('Failed to add product:', err);
     throw err;
   }
 });
 
+// ✅ Handle fetching all products
+ipcMain.handle('get-products', () => {
+  try {
+    return getProducts();
+  } catch (err) {
+    console.error('Failed to fetch products:', err);
+    throw err;
+  }
+});
+
 app.whenReady().then(createWindow);
 
-// Quit app when all windows are closed (except on macOS)
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
