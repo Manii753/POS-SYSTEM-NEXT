@@ -2,14 +2,8 @@
 import { useState } from "react";
 import { FaBackspace, FaEdit } from "react-icons/fa";
 
-const LeftContent = ({ }) => {
-    const [items, setItems] = useState([
-        { productName: "Product 1", quantity: 2, price: 20 },
-        { productName: "Product 2", quantity: 1, price: 15 },
-        { productName: "Product 3", quantity: 5, price: 10 },
-        { productName: "Product 4", quantity: 3, price: 25 },
-        { productName: "Product 5", quantity: 4, price: 30 },
-    ]);
+const LeftContent = ({ items, setItems }) => {
+    
 
     const [newProduct, setNewProduct] = useState({
         productName: "",
@@ -124,7 +118,7 @@ const LeftContent = ({ }) => {
                     {/* Items List */}
                     {items?.map((item, index) => (
                         <tr key={index} className="text-white hover:bg-black/10 h-12">
-                            <td className="px-4">{item.productName}</td>
+                            <td className="px-4">{item.productName || item.name}</td>
                             <td className="px-4 text-right">{item.quantity}</td>
                             <td className="px-4 text-right">{item.price}</td>
                             <td className="px-4 text-right">{item.price * item.quantity}</td>
