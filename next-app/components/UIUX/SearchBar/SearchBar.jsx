@@ -1,65 +1,98 @@
 'use client';
 import { useRef, useEffect, useState } from 'react';
 import { FaHashtag, FaBarcode, FaStar, FaTag, FaSearch } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
 const SearchBar = ({ onProductSelected }) => {
   const inputRef = useRef(null);
-  const wrapperRef = useRef(null); // ✅ Wrapper for outside click
+  const wrapperRef = useRef(null);
   const [query, setQuery] = useState('');
   const [products, setProducts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  // Fetch products on mount
+  const [barcodeBuffer, setBarcodeBuffer] = useState('');
+  const lastCharTime = useRef(Date.now());
+
+  // Load products
   useEffect(() => {
     const fetchProducts = async () => {
       if (window.api?.getProducts) {
-        const allProducts = await window.api.getProducts();
-        setProducts(allProducts);
-      } else {
-        console.warn('❌ Electron API not available');
+        const all = await window.api.getProducts();
+        setProducts(all);
       }
     };
     fetchProducts();
   }, []);
 
-  // Hide dropdown on outside click
+  // Global keydown listener for barcode
   useEffect(() => {
+    
+    const handleKeyDown = (e) => {
+      const now = Date.now();
+      const timeDiff = now - lastCharTime.current;
+
+      if (timeDiff > 100) {
+        setBarcodeBuffer(e.key);
+      } else {
+        setBarcodeBuffer((prev) => prev + e.key);
+      }
+
+      lastCharTime.current = now;
+
+      if (e.key === 'Enter') {
+        const barcode = barcodeBuffer.trim();
+        const found = products.find(p => p.barcode === barcode);
+
+        if (found) {
+          onProductSelected?.(found);
+          setQuery('')
+        } else {
+          toast.error('Product not found for barcode: ' + barcode);
+          setQuery('')
+        }
+
+        setBarcodeBuffer('');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [barcodeBuffer, products, onProductSelected]);
+
+  // Search field handling (unchanged)
+  const handleFocus = () => {
+    setShowDropdown(true);
+    setSuggestions(products);
+  };
+   useEffect(() => {
     const handleClickOutside = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
         setShowDropdown(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  const handleFocus = () => {
-    setShowDropdown(true);
-    setSuggestions(products); // show all initially
-  };
 
   const handleChange = (e) => {
     const val = e.target.value;
     setQuery(val);
     setShowDropdown(true);
-
-    if (val.trim() === '') {
-      setSuggestions(products);
-    } else {
-      const filtered = products.filter(p =>
-        p.name.toLowerCase().includes(val.toLowerCase())
-      );
-      setSuggestions(filtered);
-    }
+    setSuggestions(
+      val.trim() === ''
+        ? products
+        : products.filter((p) =>
+            p.name.toLowerCase().includes(val.toLowerCase())
+          )
+    );
   };
 
   const handleSelect = (product) => {
     setQuery('');
     setShowDropdown(false);
     setSuggestions([]);
-    onProductSelected?.(product); // callback to parent
+    onProductSelected?.(product);
   };
 
   return (
@@ -91,7 +124,7 @@ const SearchBar = ({ onProductSelected }) => {
                 onClick={() => handleSelect(product)}
               >
                 <span>{product.name}</span>
-                <span>Rs  {product.price}</span>
+                <span>Rs {product.price}</span>
               </li>
             ))}
           </ul>

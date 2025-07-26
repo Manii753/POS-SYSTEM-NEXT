@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 
 
 
-const RightBar = ({}) => {
+const RightBar = ({ onPaymentClick }) => {
   const router = useRouter();
   return (
     <>
@@ -75,7 +75,10 @@ const RightBar = ({}) => {
             <div className="flex justify-between gap-2 h-16">
               <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 5</button>
               <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 6</button>
-              <button className="flex-2  bg-green-600 text-white py-3 px-1 rounded hover:bg-gray-700">
+              <button
+                onClick={onPaymentClick}
+                className="flex-2  bg-green-600 text-white py-3 px-1 rounded hover:bg-gray-700">
+                
                 <h1>Payment</h1>
               </button>
               
@@ -84,7 +87,7 @@ const RightBar = ({}) => {
             {/* Row 3 */}
             <div className="flex justify-between gap-2 h-16">
               <button
-                onClick={() => router.push('/add-product')}
+                onClick={()=> router.push('/add-product')}
                 className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700"
               >
                 Add Products
