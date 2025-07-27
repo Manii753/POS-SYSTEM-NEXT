@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { addProduct, getProducts } from './productService.js';
+import { addProduct, getProducts  ,deleteProduct, updateProduct} from './productService.js';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -40,6 +40,14 @@ ipcMain.handle('get-products', () => {
     console.error('Failed to fetch products:', err);
     throw err;
   }
+});
+
+ipcMain.handle('delete-product', (event, id) => {
+  return deleteProduct(id);
+});
+
+ipcMain.handle('update-product', (event, product) => {
+  return updateProduct(product);
 });
 
 app.whenReady().then(createWindow);

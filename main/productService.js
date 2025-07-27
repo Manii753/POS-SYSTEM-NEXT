@@ -16,3 +16,15 @@ export function getProducts() {
   const stmt = db.prepare(`SELECT * FROM products`);
   return stmt.all();
 }
+
+export function deleteProduct(id) {
+  return db.prepare(`DELETE FROM products WHERE id = ?`).run(id);
+}
+
+export function updateProduct({ id, name, barcode, price, stock }) {
+  return db.prepare(`
+    UPDATE products SET name = ?, barcode = ?, price = ?, stock = ?
+    WHERE id = ?
+  `).run(name, barcode, price, stock, id);
+  
+}

@@ -92,7 +92,9 @@ const RightBar = ({ onPaymentClick }) => {
               >
                 Add Products
               </button>
-              <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 10</button>
+              <button 
+                onClick={()=> router.push('/products')}
+                className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Products</button>
               <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 11</button>
               <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 12</button>
             </div>

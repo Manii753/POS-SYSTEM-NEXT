@@ -4,4 +4,6 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('api', {
   addProduct: (product) => ipcRenderer.invoke('add-product', product),
   getProducts: () => ipcRenderer.invoke('get-products'),
+  deleteProduct: (id) => ipcRenderer.invoke('delete-product', id),
+  updateProduct: (product) => ipcRenderer.invoke('update-product', product),
 });
