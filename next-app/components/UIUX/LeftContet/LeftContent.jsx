@@ -43,7 +43,7 @@ const LeftContent = ({ items, setItems }) => {
 
     return (
       <div className="flex flex-col w-[72vw]">
-        <div className=" h-[90vh] bg-black/20 rounded-lg shadow-lg overflow-y-scroll custom-scrollbar flex flex-col">
+        <div className={`h-[87vh] bg-black/20 rounded-lg shadow-lg ${items.length > 0 ? 'overflow-y-scroll custom-scrollbar' : ''} flex flex-col`}>
             <table className="w-full">
                 <thead>
                     <tr className="text-white border-blue-900 border-t-1 border-b-1 h-12">
@@ -138,11 +138,11 @@ const LeftContent = ({ items, setItems }) => {
                     ))}
 
                     {items.length === 0 && (
-                        <tr>
-                            <td colSpan="5" className="h-[calc(80vh-96px)]">
-                                <div className="flex flex-col text-white items-center text-center justify-center h-full">
-                                    <span className="text-3xl">No items</span>
-                                    <span className="">Add Product To Receipt Using Bar Code Scanner</span>
+                        <tr className="h-[calc(87vh-198px)]">
+                            <td colSpan="5" className="">
+                                <div className="flex flex-col text-white items-center text-center justify-center h-full ">
+                                    <div className="text-3xl">No items</div>
+                                    <div className="">Add Product To Receipt Using Bar Code Scanner</div>
                                 </div>
                             </td>
                         </tr>

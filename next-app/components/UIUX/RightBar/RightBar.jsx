@@ -86,12 +86,7 @@ const RightBar = ({ onPaymentClick }) => {
 
             {/* Row 3 */}
             <div className="flex justify-between gap-2 h-16">
-              <button
-                onClick={()=> router.push('/add-product')}
-                className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700"
-              >
-                Add Products
-              </button>
+              <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 9</button>
               <button 
                 onClick={()=> router.push('/products')}
                 className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Products</button>

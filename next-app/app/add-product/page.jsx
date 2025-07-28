@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { FaBackward } from 'react-icons/fa';
 
 export default function AddProductPage() {
   const router = useRouter();
@@ -32,7 +33,11 @@ export default function AddProductPage() {
   };
 
   return (
+    
     <div className="p-6 text-white bg-gray-900 min-h-screen">
+      <button 
+        onClick={()=> router.push('/products')}><FaBackward className='hover:bg-amber-900'/>
+      </button>
       <h1 className="text-xl mb-4 font-bold">Add Product</h1>
       <input name="name" placeholder="Name" onChange={handleChange} className="mb-2 p-2 bg-gray-700 w-full" />
       <input name="barcode" placeholder="Barcode" onChange={handleChange} className="mb-2 p-2 bg-gray-700 w-full" />
