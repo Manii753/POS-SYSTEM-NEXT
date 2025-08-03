@@ -7,8 +7,8 @@ export default function ProductsPage() {
   const router = useRouter();  
   const [products, setProducts] = useState([]);
   const [editing, setEditing] = useState(null);
-  const [formData, setFormData] = useState({ name: '', barcode: '', price: '', stock: '' });
-  
+  const [formData, setFormData] = useState({ name: '', barcode: '', sku: '', price: '', stock: '' });
+
 
   useEffect(() => {
     fetchProducts();
@@ -59,6 +59,7 @@ return (
                 <thead>
                     <tr className="bg-gray-700 font-bold divide-x divide-gray-600">
                         <th className="p-2 text-left">Name</th>
+                        <th className="p-2 text-left">S-K-U</th>
                         <th className="p-2 text-left">Barcode</th>
                         <th className="p-2 text-left">Price</th>
                         <th className="p-2 text-left">Stock</th>
@@ -70,6 +71,7 @@ return (
                         editing === p.id ? (
                             <tr key={p.id} className=" hover:bg-gray-700 divide-x divide-gray-50 bg-cyan-500">
                                 <td className="p-2.5 text-left"><input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} /></td>
+                                <td className="p-2.5 text-left"><input value={formData.sku} onChange={e => setFormData({ ...formData, sku: e.target.value })} /></td>
                                 <td className="p-2.5 text-left"><input value={formData.barcode} onChange={e => setFormData({ ...formData, barcode: e.target.value })} /></td>
                                 <td className="p-2.5 text-left"><input type="number" value={formData.price} onChange={e => setFormData({ ...formData, price: +e.target.value })} /></td>
                                 <td className="p-2.5 text-left"><input type="number" value={formData.stock} onChange={e => setFormData({ ...formData, stock: +e.target.value })} /></td>
@@ -81,6 +83,7 @@ return (
                         ) : (
                             <tr key={p.id} className="hover:bg-gray-700 divide-x divide-gray-600">
                                 <td className="p-2.5 text-left">{p.name}</td>
+                                <td className="p-2.5 text-left">{p.sku}</td>
                                 <td className="p-2.5 text-left">{p.barcode}</td>
                                 <td className="p-2.5 text-left">Rs {p.price}</td>
                                 <td className="p-2.5 text-left">{p.stock}</td>

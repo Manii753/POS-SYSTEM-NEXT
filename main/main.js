@@ -1,7 +1,8 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { Menu, app, BrowserWindow } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { addProduct, getProducts  ,deleteProduct, updateProduct} from './productService.js';
+import './ipcHandlers.js';
+
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -17,38 +18,15 @@ function createWindow() {
       nodeIntegration: false,
     },
   });
+  Menu.setApplicationMenu(null);
+  win.setMenuBarVisibility(false);
 
   win.loadURL('http://localhost:3000'); // or your packed HTML in production
+  
 }
 
-// ✅ Handle adding product
-ipcMain.handle('add-product', async (event, product) => {
-  try {
-    addProduct(product);
-    return { success: true };
-  } catch (err) {
-    console.error('Failed to add product:', err);
-    throw err;
-  }
-});
 
-// ✅ Handle fetching all products
-ipcMain.handle('get-products', () => {
-  try {
-    return getProducts();
-  } catch (err) {
-    console.error('Failed to fetch products:', err);
-    throw err;
-  }
-});
 
-ipcMain.handle('delete-product', (event, id) => {
-  return deleteProduct(id);
-});
-
-ipcMain.handle('update-product', (event, product) => {
-  return updateProduct(product);
-});
 
 app.whenReady().then(createWindow);
 
