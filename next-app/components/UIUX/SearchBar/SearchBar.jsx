@@ -25,9 +25,8 @@ const SearchBar = ({ onProductSelected }) => {
     fetchProducts();
   }, []);
 
-  // Global keydown listener for barcode
+  // Global keydown listener for barcode scan
   useEffect(() => {
-    
     const handleKeyDown = (e) => {
       const now = Date.now();
       const timeDiff = now - lastCharTime.current;
@@ -42,14 +41,19 @@ const SearchBar = ({ onProductSelected }) => {
 
       if (e.key === 'Enter') {
         const barcode = barcodeBuffer.trim();
-        const found = products.find(p => p.barcode === barcode);
+
+        const found = products.find(
+          (p) =>
+            Array.isArray(p.barcodes) &&
+            p.barcodes.some((code) => code.toLowerCase() === barcode.toLowerCase())
+        );
 
         if (found) {
           onProductSelected?.(found);
-          setQuery('')
+          setQuery('');
         } else {
           toast.error('Product not found for barcode: ' + barcode);
-          setQuery('')
+          setQuery('');
         }
 
         setBarcodeBuffer('');
@@ -60,12 +64,8 @@ const SearchBar = ({ onProductSelected }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [barcodeBuffer, products, onProductSelected]);
 
-  // Search field handling (unchanged)
-  const handleFocus = () => {
-    setShowDropdown(true);
-    setSuggestions(products);
-  };
-   useEffect(() => {
+  // Close dropdown when clicking outside
+  useEffect(() => {
     const handleClickOutside = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
         setShowDropdown(false);
@@ -75,15 +75,24 @@ const SearchBar = ({ onProductSelected }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleFocus = () => {
+    setShowDropdown(true);
+    setSuggestions(products);
+  };
+
   const handleChange = (e) => {
     const val = e.target.value;
     setQuery(val);
     setShowDropdown(true);
+
+    const valLower = val.toLowerCase();
     setSuggestions(
       val.trim() === ''
         ? products
         : products.filter((p) =>
-            p.name.toLowerCase().includes(val.toLowerCase())
+            p.name.toLowerCase().includes(valLower) ||
+            p.sku?.toLowerCase().includes(valLower) ||
+            p.barcodes?.some((code) => code.toLowerCase().includes(valLower))
           )
     );
   };
@@ -111,7 +120,7 @@ const SearchBar = ({ onProductSelected }) => {
           value={query}
           onChange={handleChange}
           onFocus={handleFocus}
-          placeholder="Search by Product Name, SKU, or Category"
+          placeholder="Search by Product Name, SKU, or Barcode"
           className="w-full text-white bg-transparent border-0 focus:outline-none focus:ring-0 focus:border-0"
         />
 

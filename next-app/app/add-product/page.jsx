@@ -10,17 +10,50 @@ export default function AddProductPage() {
   const [form, setForm] = useState({
     name: '',
     sku: '',
-    barcode: '',
+    barcodes: [],
     price: '',
     stock: '',
   });
+
+  const [barcodeInput, setBarcodeInput] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 💡 SKU generator with toast validation
+  const handleBarcodeChange = (e) => {
+    setBarcodeInput(e.target.value);
+  };
+
+  const handleBarcodeKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const trimmed = barcodeInput.trim();
+      if (!trimmed) return;
+
+      if (form.barcodes.includes(trimmed)) {
+        toast.error('🚫 Barcode already added');
+        setBarcodeInput('');
+        return;
+      }
+
+      setForm((prev) => ({
+        ...prev,
+        barcodes: [...prev.barcodes, trimmed],
+      }));
+
+      setBarcodeInput('');
+    }
+  };
+
+  const removeBarcode = (code) => {
+    setForm((prev) => ({
+      ...prev,
+      barcodes: prev.barcodes.filter((b) => b !== code),
+    }));
+  };
+
   const generateSKU = () => {
     if (!form.name.trim()) {
       toast.error('❌ Please enter a product name first');
@@ -91,17 +124,36 @@ export default function AddProductPage() {
 
       <input
         name="barcode"
-        placeholder="Barcode"
-        onChange={handleChange}
+        placeholder="Scan or type barcode then press Enter"
+        value={barcodeInput}
+        onChange={handleBarcodeChange}
+        onKeyDown={handleBarcodeKeyDown}
         className="mb-2 p-2 bg-gray-700 w-full"
-        value={form.barcode}
       />
+
+      {form.barcodes.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-3">
+          {form.barcodes.map((code, index) => (
+            <span
+              key={index}
+              className="bg-gray-700 px-2 py-1 rounded text-sm flex items-center gap-1"
+            >
+              {code}
+              <button
+                onClick={() => removeBarcode(code)}
+                className="text-red-400 hover:text-red-600"
+              >
+                ✕
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
 
       <input
         name="price"
         placeholder="Price"
         type="number"
-        
         onChange={handleChange}
         className="mb-2 p-2 bg-gray-700 w-full"
         value={form.price}

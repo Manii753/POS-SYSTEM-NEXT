@@ -18,8 +18,8 @@ function createWindow() {
       nodeIntegration: false,
     },
   });
-  Menu.setApplicationMenu(null);
-  win.setMenuBarVisibility(false);
+  
+ 
 
   win.loadURL('http://localhost:3000'); // or your packed HTML in production
   
