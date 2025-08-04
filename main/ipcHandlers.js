@@ -1,6 +1,6 @@
 // main/ipcHandlers.js
 import { ipcMain } from 'electron';
-
+import { openReceiptWindow } from './main.js';
 import { addProduct, getProducts  ,deleteProduct, updateProduct} from './productService.js';
 import {
   addSale,
@@ -51,3 +51,8 @@ ipcMain.handle('getAllSales', () => getAllSales());
 ipcMain.handle('getSalesByDay', (_, date) => getSalesByDay(date));
 ipcMain.handle('getSalesByMonth', (_, month) => getSalesByMonth(month));
 ipcMain.handle('getTotalSalesAmount', () => getTotalSalesAmount());
+
+// Export the ipcMain handlers for use in the main process
+ipcMain.handle('printReceipt', (_, sale) => {
+  openReceiptWindow(sale);
+});

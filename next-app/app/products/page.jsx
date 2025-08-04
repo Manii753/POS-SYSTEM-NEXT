@@ -145,10 +145,13 @@ export default function ProductsPage() {
                       onChange={(e) => setFormData({ ...formData, stock: +e.target.value })}
                     />
                   </td>
-                  <td className="flex bg-green-600 flex-row justify-evenly w-full size-fit">
-                    <button onClick={handleSave} className="text-blue-950 p-3 cursor-pointer">
+                  <td className="flex flex-row h-30 w-70 justify-around items-center gap-2">
+                    
+                    <button onClick={handleSave} className="ml-4 text-blue-950 flex-1 bg-green-500 hover:bg-green-600 p-4 rounded">
                       Save
                     </button>
+                    <button onClick={() => setEditing(null)} className="text-red-500  cursor-pointer flex-1 bg-amber-50 p-4 rounded ">
+                      Cancel</button>
                   </td>
                 </tr>
               ) : (

@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('api', {
   getSalesByDay: (date) => ipcRenderer.invoke('getSalesByDay', date),
   getSalesByMonth: (month) => ipcRenderer.invoke('getSalesByMonth', month),
   getTotalSalesAmount: () => ipcRenderer.invoke('getTotalSalesAmount'),
+  printReceipt: (sale) => ipcRenderer.invoke('printReceipt', sale),
 
   
 });

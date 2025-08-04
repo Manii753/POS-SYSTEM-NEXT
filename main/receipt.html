@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Receipt</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: monospace;
+      font-size: 14px;
+      width: 280px; /* Fits 80mm paper */
+      margin: 10px;
+      padding: 10px;
+      color: #000;
+    }
+
+    .center { text-align: center; }
+    .line { border-top: 1px dashed #000; margin: 6px 0; }
+    .item { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .total { font-weight: bold; font-size: 13px; }
+    .header { font-size: 16px; margin-bottom: 10px; }
+    .footer { margin-top: 10px; font-size: 11px; }
+
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      @page {
+        size: 72mm auto;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="receipt" class="center">
+    <div style="font-size: 22px;font-weight: 500; font-family: fantasy;" class="header">🛍 POS Receipt</div>
+    <div id="meta"></div>
+    <div class="line"></div>
+    <div id="items"></div>
+    <div class="line"></div>
+    <div class="item total"><span>Total</span><span id="total"></span></div>
+    <div class="line"></div>
+    <div class="footer center">Thank you! 🙏</div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const sale = JSON.parse(decodeURIComponent(params.get('data')));
+
+    // Populate meta
+    document.getElementById('meta').innerHTML = `
+      <div>Invoice: ${sale.documentCode}</div>
+      <div>Date: ${sale.date}</div>
+      <div>Time: ${sale.time}</div>
+    `;
+
+    // Populate items
+    document.getElementById('items').innerHTML = sale.items.map(i => `
+      <div class="item">
+        <span>${i.name} x${i.quantity}</span>
+        <span>Rs ${i.price * i.quantity}</span>
+      </div>
+    `).join('');
+
+    // Total
+    document.getElementById('total').textContent = `Rs ${sale.totalAmount}`;
+
+    // Auto print
+    window.onload = () => {
+      window.print();
+      window.onafterprint = () => window.close();
+    };
+  </script>
+</body>
+</html>
