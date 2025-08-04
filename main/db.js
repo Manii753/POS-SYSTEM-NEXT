@@ -32,4 +32,17 @@ db.exec(`
   );
 `);
 
+db.exec(`
+    CREATE TABLE IF NOT EXISTS sales (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    document_code TEXT UNIQUE,
+    date TEXT,
+    time TEXT,
+    total_amount REAL,
+    items TEXT
+  );
+`);
+
+
+
 export default db;

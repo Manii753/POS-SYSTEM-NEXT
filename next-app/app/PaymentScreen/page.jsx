@@ -18,21 +18,46 @@ export default function PaymentScreen({ items, onClose, setItems }) {
   };
 
   const getChange = () => {
-    return (parseFloat(cashGiven || '0') - total);
+    return parseFloat(cashGiven || '0') - total;
   };
 
-  const handlePay = () => {
-    if (parseFloat(cashGiven) >= total) {
-      toast.success("Payment Successful! 🎉");
-      setItems([]); // Reset cart
-      onClose();
+  const handlePay = async () => {
+    const paid = parseFloat(cashGiven);
+    if (paid >= total) {
+      try {
+        const saleData = {
+          totalAmount: total,
+          items: items.map((item) => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            subtotal: item.price * item.quantity,
+          })),
+        };
+
+        const savedSale = await window.api.addSale(saleData);
+
+        if (savedSale?.documentCode) {
+          toast.success(`Payment Successful 🎉\nCode: ${savedSale.documentCode}`);
+        } else {
+          toast.success("Payment Successful 🎉");
+        }
+
+        setItems([]);
+        setCashGiven('');
+        onClose();
+      } catch (err) {
+        console.error("Error saving sale:", err);
+        toast.error("Something went wrong saving the sale.");
+      }
     } else {
       toast.error("Not enough cash!");
     }
   };
 
   return (
-    <div className="flex w-full h-screen  bg-gray-800 text-white">
+    <div className="flex w-full h-screen bg-gray-800 text-white">
       {/* Receipt */}
       <div className="flex flex-col justify-between flex-1 h-full p-5 border-r border-white/20">
         {/* Top content */}
@@ -62,11 +87,9 @@ export default function PaymentScreen({ items, onClose, setItems }) {
         </div>
       </div>
 
-      
-
       {/* Numpad */}
       <div className="p-5 flex flex-4 flex-col items-end justify-between space-y-4">
-        <div className=" w-full text-center py-4 rounded">
+        <div className="w-full text-center py-4 rounded">
           <div className="flex justify-between">
             <span>Total:</span>
             <span>Rs {total}</span>
@@ -79,8 +102,8 @@ export default function PaymentScreen({ items, onClose, setItems }) {
             <span>Change:</span>
             <span>Rs {getChange()}</span>
           </div>
-          
         </div>
+
         <div className="grid grid-cols-3 gap-1">
           {[1,2,3,4,5,6,7,8,9,0].map((num) => (
             <button
@@ -92,7 +115,7 @@ export default function PaymentScreen({ items, onClose, setItems }) {
             </button>
           ))}
           <button
-            className="h-15 w-17  bg-yellow-500 py-4 rounded hover:bg-yellow-700 text-xl"
+            className="h-15 w-17 bg-yellow-500 py-4 rounded hover:bg-yellow-700 text-xl"
             onClick={handleClear}
           >
             Clear

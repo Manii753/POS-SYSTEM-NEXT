@@ -67,7 +67,9 @@ const RightBar = ({ onPaymentClick }) => {
                   <h4 className='text-[12px] font-bold'>Cash Drawer</h4>
                 </div>
               </button>
-              <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 4</button>
+              <button 
+                onClick={() => router.push('/Dashboard')}
+                className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">DashBoard</button>
               
             </div>
 

@@ -2,6 +2,13 @@
 import { ipcMain } from 'electron';
 
 import { addProduct, getProducts  ,deleteProduct, updateProduct} from './productService.js';
+import {
+  addSale,
+  getAllSales,
+  getSalesByDay,
+  getSalesByMonth,
+  getTotalSalesAmount
+} from './salesService.js';
 
 
 //Handle product-related IPC calls 
@@ -36,3 +43,11 @@ ipcMain.handle('delete-product', (event, id) => {
 ipcMain.handle('update-product', (event, product) => {
   return updateProduct(product);
 });
+
+//Handle sales-related IPC calls
+
+ipcMain.handle('addSale', (_, sale) => addSale(sale));
+ipcMain.handle('getAllSales', () => getAllSales());
+ipcMain.handle('getSalesByDay', (_, date) => getSalesByDay(date));
+ipcMain.handle('getSalesByMonth', (_, month) => getSalesByMonth(month));
+ipcMain.handle('getTotalSalesAmount', () => getTotalSalesAmount());
