@@ -1,105 +1,117 @@
 'use client';
 
-
-
-import {BiCross} from 'react-icons'
-import { GiCash } from "react-icons/gi";
-import { FaMoneyBillWave } from "react-icons/fa";
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { FaMoneyBillWave } from "react-icons/fa";
 
-
-
-const RightBar = ({ onPaymentClick }) => {
+export default function RightBar({ onPaymentClick }) {
   const router = useRouter();
+  
+  const [isMenuVisible, setIsMenuVisible] = useState(false); // renders the element
+  const [isMenuActive, setIsMenuActive] = useState(false);   // controls animation state
+
+  const openMenu = () => {
+  setIsMenuVisible(true);           // Show in DOM
+  setTimeout(() => setIsMenuActive(true), 10); // allow transition
+};
+
+const closeMenu = () => {
+  setIsMenuActive(false);           // trigger exit animation
+  setTimeout(() => setIsMenuVisible(false), 300); // hide from DOM after animation
+};
+
+
   return (
     <>
-    <div className="w-[28vw] flex flex-col justify-between ">
-      <div className="flex flex-col">
-        <div className="flex gap-2 p-2">
-          <div className="flex-1 flex-col justify-center items-center p-5  gap-3 border-gray-600 border-1 text-white hover:bg-gray-700 cursor-pointer">
-            <h1>X</h1>
-            <h1></h1>
+      {/* Main Right Bar */}
+      <div className="w-[28vw] flex flex-col justify-between relative">
+        {/* Top Buttons */}
+        <div className="flex flex-col">
+          <div className="flex gap-2 p-2">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex-1 flex-col justify-center items-center p-5 gap-3 border-gray-600 border text-white hover:bg-gray-700 cursor-pointer">
+                <h1>X</h1>
+              </div>
+            ))}
           </div>
-          <div className="flex-1 flex-col justify-center items-center p-5  gap-3 border-gray-600 border-1 text-white hover:bg-gray-700 cursor-pointer">
-            <h1>X</h1>
-            <h1></h1>
+          <div className="flex">2</div>
+          <div className="flex">3</div>
+        </div>
+
+        {/* Bottom Control Buttons */}
+        <div className="flex flex-col gap-2 p-4">
+          {/* Row 1 */}
+          <div className='flex h-16'>
+            <button className="w-[24%] border border-gray-300 text-white py-3 rounded hover:bg-gray-700">
+              <div className='flex flex-col justify-center items-center gap-y-1.5'>
+                <FaMoneyBillWave className="w-5 h-5 text-green-400 " />
+                <h4 className='text-[12px] font-bold'>Cash Drawer</h4>
+              </div>
+            </button>
           </div>
-          <div className="flex-1 flex-col justify-center items-center p-5  gap-3 border-gray-600 border-1 text-white hover:bg-gray-700 cursor-pointer">
-            <h1>X</h1>
-            <h1></h1>
+
+          {/* Row 2 */}
+          <div className="flex h-16 justify-between gap-2">
+            {[...Array(3)].map((_, i) => (
+              <button key={i} className="flex-1 border border-gray-300 text-white py-3 rounded hover:bg-gray-700">
+                <div className='flex flex-col justify-center items-center gap-y-1.5'>
+                  <FaMoneyBillWave className="w-5 h-5 text-green-400 " />
+                  <h4 className='text-[12px] font-bold'>Cash Drawer</h4>
+                </div>
+              </button>
+            ))}
+            <button
+              onClick={() => router.push('/Dashboard')}
+              className="flex-1 border border-gray-300 text-white py-3 rounded hover:bg-gray-700">
+              DashBoard
+            </button>
           </div>
-          <div className="flex-1 flex-col justify-center items-center p-5  gap-3 border-gray-600 border-1 text-white hover:bg-gray-700 cursor-pointer">
-            <h1>X</h1>
-            <h1></h1>
+
+          {/* Row 3 */}
+          <div className="flex justify-between gap-2 h-16">
+            <button className="flex-1 border border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 5</button>
+            <button className="flex-1 border border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 6</button>
+            <button
+              onClick={onPaymentClick}
+              className="flex-2 bg-green-600 text-white py-3 px-1 rounded hover:bg-gray-700">
+              Payment
+            </button>
+          </div>
+
+          {/* Row 4 */}
+          <div className="flex justify-between gap-2 h-16">
+            <button className="flex-1 border border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 9</button>
+            <button
+              onClick={() => router.push('/products')}
+              className="flex-1 border border-gray-300 text-white py-3 rounded hover:bg-gray-700">Products</button>
+            <button className="flex-1 border border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 11</button>
+            <button
+              onClick={openMenu}
+              className="justify-center flex-1 border font-bold text-4xl border-gray-300 text-white py-3 rounded hover:bg-gray-700">
+              ...
+            </button>
           </div>
         </div>
-        <div className="flex">2</div>
-        <div className="flex">3</div>
       </div>
-        <div className="flex flex-col gap-2 p-4">
-            <div className='flex h-16'>
-              <button className="w-[24%] border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">
-                <div className='flex flex-col justify-center items-center gap-y-1.5'>
-                  <FaMoneyBillWave className="w-5 h-5 text-green-400 " />
-                  <h4 className='text-[12px] font-bold'>Cash Drawer</h4>
-                </div>
-              </button>
 
-            </div>
-        {/* Row 1 */}
-            <div className="flex h-16 justify-between gap-2">
-              <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">
-                <div className='flex flex-col justify-center items-center gap-y-1'>
-                  <span className='text-[14px] font-bold'>%</span>
-                  <span className='text-[12px] font-bold'>Discount</span>
-                </div>
-              </button>
-              <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">
-                <div className='flex flex-col justify-center items-center gap-y-1.5'>
-                  <FaMoneyBillWave className="w-5 h-5 text-green-400 " />
-                  <h4 className='text-[12px] font-bold'>Cash Drawer</h4>
-                </div>
-                
-              </button>
-              <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">
-                <div className='flex flex-col justify-center items-center gap-y-1.5'>
-                  <FaMoneyBillWave className="w-5 h-5 text-green-400 " />
-                  <h4 className='text-[12px] font-bold'>Cash Drawer</h4>
-                </div>
-              </button>
-              <button 
-                onClick={() => router.push('/Dashboard')}
-                className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">DashBoard</button>
-              
-            </div>
-
-            {/* Row 2 */}
-            <div className="flex justify-between gap-2 h-16">
-              <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 5</button>
-              <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 6</button>
-              <button
-                onClick={onPaymentClick}
-                className="flex-2  bg-green-600 text-white py-3 px-1 rounded hover:bg-gray-700">
-                
-                <h1>Payment</h1>
-              </button>
-              
-            </div>
-
-            {/* Row 3 */}
-            <div className="flex justify-between gap-2 h-16">
-              <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 9</button>
-              <button 
-                onClick={()=> router.push('/products')}
-                className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Products</button>
-              <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 11</button>
-              <button className="flex-1 border-1 border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 12</button>
-            </div>
+      {/* Slide-In Menu Panel with closing animation */}
+      {isMenuVisible && (
+        <div
+          className={`fixed top-0 right-0 h-full w-[18vw] bg-gray-900 rounded shadow-lg z-50 transform transition-all duration-300 ease-in-out
+            ${isMenuActive ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}
+          `}
+        >
+          <div className="p-4 flex justify-between items-center border-b border-white/20">
+            <h2 className="text-xl font-bold text-white">Menu</h2>
+            <button onClick={closeMenu} className="text-white text-2xl">×</button>
           </div>
+          <div className="p-4 text-white">
+            <p>This is the side menu.</p>
+            <p>You can put settings, tools, etc., here.</p>
+          </div>
+        </div>
+      )}
 
-      </div>
     </>
   );
 }
-
-export default RightBar
