@@ -1,10 +1,9 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 export default function PaymentScreen({ items, onClose, setItems }) {
-  const router = useRouter();
+  
   const [cashGiven, setCashGiven] = useState('');
   const [saleInfo, setSaleInfo] = useState(null); // <-- Track sale after payment
 

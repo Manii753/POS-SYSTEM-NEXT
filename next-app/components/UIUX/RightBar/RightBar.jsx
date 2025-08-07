@@ -3,22 +3,33 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FaMoneyBillWave } from "react-icons/fa";
+import { toast, Toaster } from 'react-hot-toast';
 
-export default function RightBar({ onPaymentClick }) {
+
+export default function RightBar({ onPaymentClick ,items }) {
   const router = useRouter();
   
   const [isMenuVisible, setIsMenuVisible] = useState(false); // renders the element
   const [isMenuActive, setIsMenuActive] = useState(false);   // controls animation state
 
-  const openMenu = () => {
-  setIsMenuVisible(true);           // Show in DOM
-  setTimeout(() => setIsMenuActive(true), 10); // allow transition
-};
+  const handlePayment = () => {
+    if (!items || items.length === 0) {
+      toast.error("No items in the cart!");
+      return;
+    }
 
-const closeMenu = () => {
-  setIsMenuActive(false);           // trigger exit animation
-  setTimeout(() => setIsMenuVisible(false), 300); // hide from DOM after animation
-};
+    if (onPaymentClick) onPaymentClick();
+  };
+  
+  const openMenu = () => {
+    setIsMenuVisible(true);           // Show in DOM
+    setTimeout(() => setIsMenuActive(true), 10); // allow transition
+  };
+
+  const closeMenu = () => {
+    setIsMenuActive(false);           // trigger exit animation
+    setTimeout(() => setIsMenuVisible(false), 300); // hide from DOM after animation
+  };
 
 
   return (
@@ -72,7 +83,7 @@ const closeMenu = () => {
             <button className="flex-1 border border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 5</button>
             <button className="flex-1 border border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 6</button>
             <button
-              onClick={onPaymentClick}
+              onClick={handlePayment}
               className="flex-2 bg-green-600 text-white py-3 px-1 rounded hover:bg-gray-700">
               Payment
             </button>
