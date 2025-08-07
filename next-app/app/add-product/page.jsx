@@ -74,18 +74,25 @@ export default function AddProductPage() {
   };
 
   const handleSubmit = async () => {
-    if (typeof window !== 'undefined' && window.api?.addProduct) {
-      await window.api.addProduct({
-        ...form,
-        price: parseFloat(form.price),
-        stock: parseInt(form.stock),
-      });
-      router.push('/');
-      toast.success('✅ Product saved successfully');
-    } else {
-      toast.error('❌ Electron API not available');
+  if (typeof window !== 'undefined' && window.api?.addProduct) {
+    const response = await window.api.addProduct({
+      ...form,
+      price: parseFloat(form.price),
+      stock: parseInt(form.stock),
+    });
+
+    if (!response.success) {
+      toast.error(`🚫 ${response.error}`);
+      return;
     }
-  };
+
+    toast.success('✅ Product saved successfully');
+    router.push('/');
+  } else {
+    toast.error('❌ Electron API not available');
+  }
+};
+
 
   return (
     <div className="p-6 text-white bg-gray-900 min-h-screen">

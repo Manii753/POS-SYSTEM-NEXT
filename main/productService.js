@@ -6,6 +6,18 @@ import db from './db.js';
 export function addProduct(product) {
   const { name, sku, price, stock, barcodes } = product;
 
+  const existingBarcode = barcodes?.find((code) => {
+    const row = db.prepare('SELECT 1 FROM barcodes WHERE code = ?').get(code);
+    return !!row;
+  });
+
+  if (existingBarcode) {
+    // Throw a custom error that frontend can catch
+    const error = new Error(`Barcode already exists: ${existingBarcode}`);
+    error.code = 'BARCODE_EXISTS';
+    throw error;
+  }
+
   const insertProduct = db.prepare(`
     INSERT INTO products (name, sku, price, stock)
     VALUES (?, ?, ?, ?)
@@ -33,6 +45,7 @@ export function addProduct(product) {
 
   return productId;
 }
+
 
 // ✅ Get all products
 export function getProducts() {

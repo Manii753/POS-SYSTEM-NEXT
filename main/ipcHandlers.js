@@ -16,13 +16,17 @@ import {
 // ✅ Handle adding product
 ipcMain.handle('add-product', async (event, product) => {
   try {
-    addProduct(product);
-    return { success: true };
+    const id = addProduct(product);
+    return { success: true, id };
   } catch (err) {
-    console.error('Failed to add product:', err);
-    throw err;
+    if (err.code === 'BARCODE_EXISTS') {
+      return { success: false, error: err.message };
+    }
+    console.error('Error adding product:', err);
+    return { success: false, error: 'Unexpected error' };
   }
 });
+
 
 // ✅ Handle fetching all products
 ipcMain.handle('get-products', () => {
