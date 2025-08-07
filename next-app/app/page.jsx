@@ -15,16 +15,15 @@ export default function Home() {
 
   const handleProductSelected = (product) => {
     setItems((prev) => {
-      const exists = prev.find((p) => p.barcode === product.barcode);
+      const exists = prev.find((p) => p.id === product.id); // Use SQLite's unique id
       return exists
         ? prev.map((p) =>
-            p.barcode === product.barcode
-              ? { ...p, quantity: p.quantity + 1 }
-              : p
+            p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
           )
         : [...prev, { ...product, quantity: 1 }];
     });
   };
+
 
   return (
    
