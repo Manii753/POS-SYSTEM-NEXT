@@ -45,7 +45,7 @@ export default function Home() {
               <SearchBar onProductSelected={handleProductSelected} />
               <div className="flex w-full h-[94vh]">
                 <LeftContent items={items} setItems={setItems} />
-                <RightBar onPaymentClick={() => setShowPaymentScreen(true)} />
+                <RightBar items={items} onPaymentClick={() => setShowPaymentScreen(true)} />
               </div>
            </div>
         )}

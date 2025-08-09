@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import './ipcHandlers.js';
+import db from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,7 +19,11 @@ function createWindow() {
     },
   });
 
+  
+
   win.loadURL('http://localhost:3000');
+  
+
 }
 
 // ✅ Create and print receipt window
@@ -40,6 +45,7 @@ function openReceiptWindow(sale) {
     receiptWin.show();
   });
 }
+
 
 
 
