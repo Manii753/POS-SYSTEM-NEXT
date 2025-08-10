@@ -48,6 +48,15 @@ ipcMain.handle('update-product', (event, product) => {
   return updateProduct(product);
 });
 
+
+
+
+
+
+
+
+
+
 //Handle sales-related IPC calls
 
 ipcMain.handle('addSale', (_, sale) => addSale(sale));

@@ -70,6 +70,7 @@ export function deleteProduct(id) {
 }
 
 export function updateProduct({ id, name, sku, barcodes, price, stock }) {
+  
   const update = db.prepare(`
     UPDATE products SET name = ?, sku = ?, price = ?, stock = ?
     WHERE id = ?
