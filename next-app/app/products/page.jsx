@@ -1,9 +1,13 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+
+import { useState } from 'react';
+import AddProductPage from '../add-product/page'; 
 import { FaBackward } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function ProductsPage() {
+  const [isAddOpen, setIsAddOpen] = useState(false);
   const router = useRouter();
   const [products, setProducts] = useState([]);
   const [editing, setEditing] = useState(null);
@@ -45,21 +49,17 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="flex flex-col p-6 text-white">
-      <button onClick={() => router.push('/')}>
-        <FaBackward className="hover:bg-amber-900" />
-      </button>
-
-      <div className="flex flex-row justify-between items-center mb-4">
-        <h1 className="text-3xl m-3 ml-0 text-left">Product List</h1>
-        <div>
-          <button
-            onClick={() => router.push('/add-product')}
-            className="cursor-pointer hover:bg-white hover:text-black bg-auto border-1 rounded p-2 mr-2"
-          >
-            Add Product
-          </button>
-        </div>
+    <div className="relative min-h-screen bg-gray-900 text-white overflow-hidden">
+      {/* Products List */}
+      <div className={`p-6 transition-all duration-300 ${isAddOpen ? 'opacity-50' : 'opacity-100'}`}>
+        <h1 className="text-2xl font-bold mb-4">Products</h1>
+        {/* Your product list rendering here */}
+        <button
+          onClick={() => setIsAddOpen(true)}
+          className="bg-blue-600 hover:bg-blue-800 px-4 py-2 rounded"
+        >
+          Add Product
+        </button>
       </div>
 
       <div>
@@ -77,7 +77,7 @@ export default function ProductsPage() {
           <tbody className="divide-y divide-gray-600">
             {products.map((p) =>
               editing === p.id ? (
-                <tr key={p.id} className="hover:bg-gray-700 divide-x divide-gray-50 bg-cyan-500">
+                <tr key={p.id} className=" hover:bg-gray-700 divide-x divide-gray-50 justify-center items-center bg-cyan-500">
                   <td className="p-2.5 text-left">
                     <input
                       value={formData.name}
@@ -145,12 +145,12 @@ export default function ProductsPage() {
                       onChange={(e) => setFormData({ ...formData, stock: +e.target.value })}
                     />
                   </td>
-                  <td className="flex flex-row h-30 w-70 justify-around items-center gap-2">
+                  <td className="flex flex-row justify-evenly">
                     
-                    <button onClick={handleSave} className="ml-4 text-blue-950 flex-1 bg-green-500 hover:bg-green-600 p-4 rounded">
+                    <button onClick={handleSave} className=" text-blue-950  bg-green-500 hover:bg-green-600 p-4 rounded">
                       Save
                     </button>
-                    <button onClick={() => setEditing(null)} className="text-red-500  cursor-pointer flex-1 bg-amber-50 p-4 rounded ">
+                    <button onClick={() => setEditing(null)} className="text-red-500 cursor-pointer bg-amber-50 p-4 rounded ">
                       Cancel</button>
                   </td>
                 </tr>
@@ -181,6 +181,13 @@ export default function ProductsPage() {
             )}
           </tbody>
         </table>
+      </div>
+      <div
+        className={`fixed top-0 right-0 h-full w-full sm:w-[500px] bg-gray-800 shadow-lg transform transition-transform duration-300 z-50 ${
+          isAddOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <AddProductPage onClose={() => setIsAddOpen(false)} />
       </div>
     </div>
   );

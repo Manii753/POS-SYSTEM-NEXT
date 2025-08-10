@@ -1,12 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { FaBackward, FaWrench } from 'react-icons/fa';
 import toast, { Toaster } from 'react-hot-toast';
 
-export default function AddProductPage() {
-  const router = useRouter();
+export default function AddProductPage({ onClose }) {
   const [form, setForm] = useState({
     name: '',
     sku: '',
@@ -74,30 +72,29 @@ export default function AddProductPage() {
   };
 
   const handleSubmit = async () => {
-  if (typeof window !== 'undefined' && window.api?.addProduct) {
-    const response = await window.api.addProduct({
-      ...form,
-      price: parseFloat(form.price),
-      stock: parseInt(form.stock),
-    });
+    if (typeof window !== 'undefined' && window.api?.addProduct) {
+      const response = await window.api.addProduct({
+        ...form,
+        price: parseFloat(form.price),
+        stock: parseInt(form.stock),
+      });
 
-    if (!response.success) {
-      toast.error(`🚫 ${response.error}`);
-      return;
+      if (!response.success) {
+        toast.error(`🚫 ${response.error}`);
+        return;
+      }
+
+      toast.success('✅ Product saved successfully');
+      onClose(); // Close drawer after save
+    } else {
+      toast.error('❌ Electron API not available');
     }
-
-    toast.success('✅ Product saved successfully');
-    router.push('/');
-  } else {
-    toast.error('❌ Electron API not available');
-  }
-};
-
+  };
 
   return (
-    <div className="p-6 text-white bg-gray-900 min-h-screen">
+    <div className="p-6 text-white bg-gray-900 h-full overflow-y-auto">
       <Toaster position="top-right" />
-      <button type="button" onClick={() => router.push('/products')}>
+      <button type="button" onClick={onClose} className="mb-4">
         <FaBackward className="hover:bg-amber-900" />
       </button>
 

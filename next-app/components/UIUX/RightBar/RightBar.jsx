@@ -72,9 +72,9 @@ export default function RightBar({ onPaymentClick ,items }) {
               </button>
             ))}
             <button
-              onClick={() => router.push('/Dashboard')}
+              
               className="flex-1 border border-gray-300 text-white py-3 rounded hover:bg-gray-700">
-              DashBoard
+              btn
             </button>
           </div>
 
@@ -93,8 +93,8 @@ export default function RightBar({ onPaymentClick ,items }) {
           <div className="flex justify-between gap-2 h-16">
             <button className="flex-1 border border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 9</button>
             <button
-              onClick={() => router.push('/products')}
-              className="flex-1 border border-gray-300 text-white py-3 rounded hover:bg-gray-700">Products</button>
+              
+              className="flex-1 border border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 10</button>
             <button className="flex-1 border border-gray-300 text-white py-3 rounded hover:bg-gray-700">Btn 11</button>
             <button
               onClick={openMenu}

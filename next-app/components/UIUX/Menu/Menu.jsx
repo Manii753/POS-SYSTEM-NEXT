@@ -1,6 +1,8 @@
+import { useRouter } from 'next/navigation';
 import React from 'react'
 
 const Menu = ({closeMenu,isMenuActive}) => {
+    const router = useRouter();
   return (
         <>
           {/* Overlay (dark + blur + click block) */}
@@ -22,8 +24,14 @@ const Menu = ({closeMenu,isMenuActive}) => {
               <button onClick={closeMenu} className="text-white text-2xl">×</button>
             </div>
             <div className="p-4 text-white">
-              <p>This is the side menu.</p>
-              <p>You can put settings, tools, etc., here.</p>
+                <ul className="space-y-2">
+                    <li onClick={()=> router.push('/Mangement')} className="hover:bg-gray-700 p-2 rounded cursor-pointer">Management</li>
+                    <li onClick={()=>router.push('/products')} className="hover:bg-gray-700 p-2 rounded cursor-pointer">Products</li>
+                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">Sales</li>
+                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">Reports</li>
+                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">Settings</li>
+                </ul>
+              
             </div>
           </div>
         </>

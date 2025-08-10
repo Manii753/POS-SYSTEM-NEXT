@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function DashboardPage() {
+  
   const router = useRouter();
   const [sales, setSales] = useState([]);
   const [total, setTotal] = useState(0);
@@ -44,9 +45,7 @@ export default function DashboardPage() {
 
   return (
     <div className="p-8 text-white space-y-6">
-      <button onClick={() => router.back()} className="text-white mb-4 p-2 rounded bg-gray-700 hover:bg-gray-600"
-        ><FaBackward/></button>
-
+      
       <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
 
       <div className="grid grid-cols-3 gap-6">
