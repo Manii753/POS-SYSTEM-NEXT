@@ -38,7 +38,7 @@ export default function Management() {
       </button>
       {/* Left Menu */}
         <div className="flex flex-row h-full w-full">
-            <div className="w-1/5 bg-gray-800 border-1 rounded-sm border-gray-700 p-4 space-y-3">
+            <div className="w-1/6 bg-gray-800 border-1 rounded-sm border-gray-700 p-4 space-y-3">
                 <button
                 className={`block w-full text-left px-3 py-2 rounded hover:bg-gray-700 ${
                     activePage === "home" ? "bg-gray-700" : ""

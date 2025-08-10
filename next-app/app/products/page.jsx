@@ -219,13 +219,24 @@ export default function ProductsPage() {
           </table>
         </div>
       </div>
-      <div
-        className={`fixed top-0 right-0 h-full w-full sm:w-[500px] bg-gray-800 shadow-lg transform transition-transform duration-300 z-50 ${
-          isAddOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <AddProductPage onClose={() => setIsAddOpen(false)} />
-      </div>
+      {/* Overlay */}
+        {isAddOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-40"
+            onClick={() => setIsAddOpen(false)} // close when clicking overlay
+          />
+        )}
+
+        {/* Modal */}
+        <div
+          className={`fixed top-0 right-0 h-full w-full sm:w-[500px] bg-gray-800 shadow-lg transform transition-transform duration-300 z-50 ${
+            isAddOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+          onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+        >
+          <AddProductPage onClose={() => setIsAddOpen(false)} />
+        </div>
+
     </div>
   );
 }
