@@ -23,7 +23,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
+      <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
       {showPaymentScreen ? (
         <PaymentScreen
           items={items}

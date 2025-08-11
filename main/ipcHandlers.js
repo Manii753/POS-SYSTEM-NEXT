@@ -9,6 +9,11 @@ import {
   getSalesByMonth,
   getTotalSalesAmount
 } from './salesService.js';
+import { dialog } from 'electron';
+import PDFDocument from 'pdfkit';
+import fs from 'fs';
+
+
 
 
 //Handle product-related IPC calls 
@@ -68,4 +73,69 @@ ipcMain.handle('getTotalSalesAmount', () => getTotalSalesAmount());
 // Export the ipcMain handlers for use in the main process
 ipcMain.handle('printReceipt', (_, sale) => {
   openReceiptWindow(sale);
+});
+
+
+// Handle downloading receipt as PDF
+
+
+ipcMain.handle('download-receipt-pdf', async (event, saleInfo) => {
+  try {
+    const { canceled, filePath } = await dialog.showSaveDialog({
+      title: 'Save Receipt as PDF',
+      defaultPath: `receipt_${saleInfo.documentCode}.pdf`,
+      filters: [{ name: 'PDF Files', extensions: ['pdf'] }]
+    });
+
+    if (canceled) return { success: false, error: 'User cancelled' };
+
+    const doc = new PDFDocument({ margin: 50 });
+    doc.pipe(fs.createWriteStream(filePath));
+
+    // Store header
+    doc.fontSize(18).text('My Store', { align: 'center' });
+    doc.fontSize(10).text('123 Market Street, Karachi', { align: 'center' });
+    doc.text('Phone: 0300-1234567', { align: 'center' });
+    doc.moveDown();
+
+    // Receipt title
+    doc.fontSize(14).text('Receipt', { align: 'center' });
+    doc.text(`Code: ${saleInfo.documentCode}`, { align: 'center' });
+    doc.moveDown();
+
+    // Table header
+    doc.fontSize(12).text('Item', 50, doc.y, { continued: true })
+      .text('Qty', 250, doc.y, { continued: true })
+      .text('Price', 300, doc.y, { continued: true })
+      .text('Total', 370, doc.y);
+    doc.moveTo(50, doc.y).lineTo(500, doc.y).stroke();
+
+    // Items
+    saleInfo.items.forEach(item => {
+      const total = (item.quantity * item.price).toFixed(2);
+      doc.fontSize(10)
+        .text(item.name, 50, doc.y, { continued: true })
+        .text(item.quantity, 250, doc.y, { continued: true })
+        .text(`Rs ${item.price.toFixed(2)}`, 300, doc.y, { continued: true })
+        .text(`Rs ${total}`, 370, doc.y);
+    });
+
+    doc.moveDown();
+    doc.moveTo(50, doc.y).lineTo(500, doc.y).stroke();
+
+    // Totals
+    doc.fontSize(12).text(`Total: Rs ${saleInfo.totalAmount.toFixed(2)}`, { align: 'right' });
+    doc.text(`Paid: Rs ${(saleInfo.totalAmount + saleInfo.change).toFixed(2)}`, { align: 'right' });
+    doc.text(`Change: Rs ${saleInfo.change.toFixed(2)}`, { align: 'right' });
+
+    doc.moveDown();
+    doc.fontSize(10).text('Thank you for shopping with us!', { align: 'center' });
+
+    doc.end();
+
+    return { success: true, filePath };
+  } catch (err) {
+    console.error('Error generating PDF:', err);
+    return { success: false, error: err.message };
+  }
 });

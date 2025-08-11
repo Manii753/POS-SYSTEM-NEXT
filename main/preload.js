@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('api', {
   getSalesByMonth: (month) => ipcRenderer.invoke('getSalesByMonth', month),
   getTotalSalesAmount: () => ipcRenderer.invoke('getTotalSalesAmount'),
   printReceipt: (sale) => ipcRenderer.invoke('printReceipt', sale),
+  downloadReceiptPDF: (saleData) => ipcRenderer.invoke('download-receipt-pdf', saleData)
   
 
   

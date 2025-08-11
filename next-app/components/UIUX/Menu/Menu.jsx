@@ -26,7 +26,8 @@ const Menu = ({closeMenu,isMenuActive}) => {
             <div className="p-4 text-white">
                 <ul className="space-y-2">
                     <li onClick={()=> router.push('/Mangement')} className="hover:bg-gray-700 p-2 rounded cursor-pointer">Management</li>
-                    <li onClick={()=>router.push('/products')} className="hover:bg-gray-700 p-2 rounded cursor-pointer">Products</li>
+                    <div className='h-[1px] bg-gray-400'></div>
+                    <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">View Sales History</li>
                     <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">Sales</li>
                     <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">Reports</li>
                     <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">Settings</li>

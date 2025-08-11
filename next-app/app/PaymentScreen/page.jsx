@@ -1,38 +1,26 @@
 'use client';
 import { useState } from 'react';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function PaymentScreen({ items, onClose, setItems }) {
-  
   const [cashGiven, setCashGiven] = useState('');
-  const [saleInfo, setSaleInfo] = useState(null); // <-- Track sale after payment
+  const [saleInfo, setSaleInfo] = useState(null);
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  const handleNumberClick = (num) => {
-    setCashGiven((prev) => prev + num);
-  };
-
-  const handleClear = () => {
-    setCashGiven('');
-  };
-
-  const getChange = () => {
-    return parseFloat(cashGiven || '0') - total;
-  };
+  const handleNumberClick = (num) => setCashGiven((prev) => prev + num);
+  const handleClear = () => setCashGiven('');
+  const getChange = () => parseFloat(cashGiven || '0') - total;
 
   const handlePay = async () => {
     const paid = parseFloat(cashGiven);
     if (paid >= total) {
       try {
         const now = new Date();
-        const date = now.toLocaleDateString();
-        const time = now.toLocaleTimeString();
-
         const saleData = {
           totalAmount: total,
-          date,
-          time,
+          date: now.toLocaleDateString(),
+          time: now.toLocaleTimeString(),
           items: items.map((item) => ({
             id: item.id,
             name: item.name,
@@ -43,14 +31,10 @@ export default function PaymentScreen({ items, onClose, setItems }) {
         };
 
         const savedSale = await window.api.addSale(saleData);
-        const finalSale = {
-          ...saleData,
-          documentCode: savedSale.documentCode,
-        };
+        const finalSale = { ...saleData, documentCode: savedSale.documentCode, change: getChange() };
 
         toast.success(`Payment Successful 🎉\nCode: ${finalSale.documentCode}`);
-        setSaleInfo(finalSale); // <-- Show receipt
-        setItems([]);
+        setSaleInfo(finalSale);
         setCashGiven('');
       } catch (err) {
         console.error("Error saving sale:", err);
@@ -67,10 +51,17 @@ export default function PaymentScreen({ items, onClose, setItems }) {
     }
   };
 
+  const handleDownloadPDF = async () => {
+    if (saleInfo) {
+      await window.api.downloadReceiptPDF(saleInfo); // You'll need to implement this
+    }
+  };
+
   return (
     <div className="flex w-full h-screen bg-gray-800 text-white">
-      {/* Receipt Panel */}
-      <div className="flex flex-col justify-between flex-1 h-full p-5 border-r border-white/20">
+      
+      {/* Left Receipt Panel */}
+      <div className="flex flex-col w-1/6 justify-between h-full p-5 border-r border-white/20">
         <div className="space-y-3">
           <h2 className="text-xl font-bold mb-2">Items</h2>
           <ul className="space-y-1">
@@ -96,43 +87,48 @@ export default function PaymentScreen({ items, onClose, setItems }) {
         </div>
       </div>
 
-      {/* Right Panel: Payment OR Receipt */}
-      <div className="p-5 flex flex-4 flex-col items-end justify-between space-y-4">
+      {/* Right Panel */}
+      <div className="p-5 flex flex-[2] flex-col justify-between">
         {saleInfo ? (
-          <div className="w-full text-white text-lg space-y-4">
-            <div className="text-center w-full">
-              <h2 className="text-2xl font-bold">Receipt</h2>
-              <p>Invoice: {saleInfo.documentCode}</p>
-              <p>Date: {saleInfo.date}</p>
-              <p>Time: {saleInfo.time}</p>
-              <div className="border-t border-white/10 my-2"></div>
-              {saleInfo.items.map((item, i) => (
-                <div key={i} className="flex justify-between">
-                  <span>{item.name} x {item.quantity}</span>
-                  <span>Rs {item.subtotal}</span>
-                </div>
-              ))}
-              <div className="border-t border-white/10 my-2"></div>
-              <div className="flex justify-between font-bold text-lg">
-                <span>Total:</span>
-                <span>Rs {saleInfo.totalAmount}</span>
-              </div>
+          <>
+            {/* Change Display */}
+            <div className="text-center text-2xl font-bold text-green-400">
+              Change: Rs {saleInfo.change}
             </div>
-            <button
-              className="bg-green-600 px-6 py-3 rounded hover:bg-green-800 w-full"
-              onClick={handlePrint}
-            >
-              🖨️ Print Receipt
-            </button>
-            <button
-              className="bg-blue-600 px-6 py-2 rounded hover:bg-blue-800 w-full"
-              onClick={onClose}
-            >
-              Back to POS
-            </button>
-          </div>
+
+            {/* Buttons */}
+            <div className="flex flex-col items-center gap-4 flex-1 justify-center">
+              <button
+                className="bg-green-600 px-8 py-4 rounded hover:bg-green-800 w-2/3 text-lg"
+                onClick={handlePrint}
+              >
+                🖨️ Print Receipt
+              </button>
+              <button
+                className="bg-yellow-500 px-8 py-4 rounded hover:bg-yellow-700 w-2/3 text-lg"
+                onClick={handleDownloadPDF}
+              >
+                📄 Download PDF
+              </button>
+            </div>
+
+            {/* Done button bottom right */}
+            <div className="flex justify-end">
+              <button
+                className="bg-blue-600 px-6 py-2 rounded hover:bg-blue-800 text-lg"
+                onClick={() => {
+                  onClose();
+                  setItems([]);
+                }}
+              >
+                Done
+              </button>
+            </div>
+          </>
         ) : (
           <>
+          <div className="h-full flex flex-col justify-between items-end text-center text-2xl font-bold mb-4">
+            
             <div className="w-full text-center py-4 rounded">
               <div className="flex justify-between">
                 <span>Total:</span>
@@ -147,8 +143,8 @@ export default function PaymentScreen({ items, onClose, setItems }) {
                 <span>Rs {getChange()}</span>
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-1">
-              {[1,2,3,4,5,6,7,8,9,0].map((num) => (
+            <div className="grid grid-cols-3 w-fit gap-1 items-end">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((num) => (
                 <button
                   key={num}
                   className="h-15 w-17 bg-blue-600 py-4 rounded hover:bg-blue-800 text-xl"
@@ -170,6 +166,7 @@ export default function PaymentScreen({ items, onClose, setItems }) {
                 Pay
               </button>
             </div>
+          </div>  
           </>
         )}
       </div>
