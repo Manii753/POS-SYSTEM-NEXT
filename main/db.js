@@ -10,7 +10,7 @@ const dbPath = path.join(app.getPath('userData'), 'pos.db');
 fs.mkdirSync(path.dirname(dbPath), { recursive: true });
 
 const db = new Database(dbPath);
-console.log('Database initialized:', db);
+
 
 
 // ✅ Create products table

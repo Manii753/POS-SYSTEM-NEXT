@@ -2,7 +2,8 @@ import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import './ipcHandlers.js';
-import db from './db.js';
+import './ipcAuthHandlers.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
