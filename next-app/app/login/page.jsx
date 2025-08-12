@@ -1,107 +1,117 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { useState } from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import MuiCard from '@mui/material/Card';
-import Divider from '@mui/material/Divider';
-import { styled } from '@mui/material/styles';
-import Link from '@mui/material/Link';
-import toast, { Toaster } from 'react-hot-toast';
-import { FaReceipt } from 'react-icons/fa';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
-const Card = styled(MuiCard)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignSelf: 'center',
-  width: '100%',
-  padding: theme.spacing(4),
-  gap: theme.spacing(2),
-  margin: 'auto',
-  [theme.breakpoints.up('sm')]: {
-    width: '420px',
-  },
-}));
+export default function LoginPage() {
+  const router = useRouter();
 
-const Container = styled(Stack)(({ theme }) => ({
-  height: '100vh',
-  padding: theme.spacing(2),
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-export default function Login() {
-  const [form, setForm] = useState({ email: '', password: '' });
-  const [busy, setBusy] = useState(false);
-  const [remember, setRemember] = useState(true);
-
-  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-
-  const submit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (!form.email || !form.password) return toast.error('Fill all fields');
+    setLoading(true);
 
-    setBusy(true);
     try {
-      const res = await window.api.auth.login({ email: form.email, password: form.password });
-      if (res.success) {
-        // store token locally
-        if (remember) localStorage.setItem('auth_token', res.token);
-        else sessionStorage.setItem('auth_token', res.token);
-        toast.success('Logged in');
-        setTimeout(() => {
-          window.location.href = '/'; // or router.push('/')
-        }, 500);
+      // Call Electron API
+      const result = await window.api.auth.login({ email, password });
+
+      if (result.success) {
+        console.log("Login successful:", result);
+        localStorage.setItem("auth_token", result.token);
+        toast.success("Login successful!");
+        router.push("/HomePage"); // Redirect to home page
       } else {
-        if (res.error === 'INVALID_CREDENTIALS') toast.error('Invalid email or password');
-        else toast.error(res.message || 'Login failed');
+        toast.error(result.message || "Invalid credentials");
       }
     } catch (err) {
-      console.error('login error', err);
-      toast.error('Login failed (see console)');
+      toast.error("Login failed: " + err.message);
     } finally {
-      setBusy(false);
+      setLoading(false);
     }
   };
 
   return (
-    <React.Fragment>
-      <CssBaseline />
-      <Toaster position="top-center" />
-      <Container>
-        <Card variant="outlined">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <FaReceipt style={{ fontSize: 28 }} />
-            <Typography component="h1" variant="h5" sx={{ fontWeight: 600 }}>
-              Sign in
-            </Typography>
-          </div>
+    <div className="flex min-h-screen items-center justify-center  bg-gray-950 p-4">
+      <Card className="w-full max-w-sm border-gray-800  bg-gray-900  ">
+        <CardHeader>
+          <CardTitle className="text-white text-center">Login to your account</CardTitle>
+          <CardDescription className="text-white text-center">
+            Enter your email below to login to your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin}>
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-2">
+                <Label 
+                  className="text-gray-300"
+                  htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="bg-gray-800 text-white border-gray-700"
+                />
+              </div>
+              <div className="grid gap-2">
+                <div className="flex items-center">
+                  <Label 
+                    className="text-gray-300"
+                    htmlFor="password">Password</Label>
+                  <a
+                    href="#"
+                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline text-gray-300"
+                  >
+                    Forgot your password?
+                  </a>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="bg-gray-800 text-white border-gray-700"
+                />
+              </div>
+            </div>
+            <CardFooter className="flex-col gap-2 mt-6">
+              <Button type="submit"className="w-full bg-green-600 hover:bg-green-700" disabled={loading}>
+                {loading ? "Logging in..." : "Login"}
+              </Button>
+              <p className="text-center text-[15px] text-gray-400">
+                Don't have an account?{" "}
+                <a
+                  href="/signup"
+                  className="text-green-500 hover:underline"
+                >
+                  Sign Up
+                </a>
+              </p>
 
-          <Box component="form" onSubmit={submit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField label="Email" name="email" value={form.email} onChange={onChange} required fullWidth />
-            <TextField label="Password" name="password" type="password" value={form.password} onChange={onChange} required fullWidth />
-            <FormControlLabel control={<Checkbox checked={remember} onChange={(e) => setRemember(e.target.checked)} />} label="Remember me" />
-
-            <Button type="submit" variant="contained" disabled={busy} fullWidth>
-              {busy ? 'Signing in...' : 'Sign in'}
-            </Button>
-          </Box>
-
-          <Divider sx={{ my: 2 }} />
-
-          <Stack direction="row" justifyContent="space-between">
-            <Link href="/signup">Create account</Link>
-            <Link href="#">Forgot password?</Link>
-          </Stack>
-        </Card>
-      </Container>
-    </React.Fragment>
+            </CardFooter>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
